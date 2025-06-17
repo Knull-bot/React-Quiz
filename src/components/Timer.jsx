@@ -6,7 +6,9 @@ export default function Timer({ time, onTimeOut }) {
 
   // Handling function after our Timer experied
   useEffect(() => {
-    setTimeout(onTimeOut, time);
+    const timer = setTimeout(onTimeOut, time);
+
+    return () => clearTimeout(timer);
   }, [time, onTimeOut]);
 
   // Handling function for reducing time in progress-bar
