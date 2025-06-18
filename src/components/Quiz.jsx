@@ -7,20 +7,38 @@ const TIMER = 15000;
 
 export default function Quiz() {
   const [userAnswer, setUserAnswer] = useState([]);
+  // State for checking if answer was right and changing css-className
+  const [answerState, setAnswerState] = useState("unanswered");
 
   // Here we getting and have control above index's withput a useState Hook
-  const activeQuestionIndex = userAnswer.length;
+  const activeQuestionIndex =
+    answerState === "unanswered" ? userAnswer.length : userAnswer.length - 1;
 
   //Deriving condition, when all the auestins are out and our Quiz is coming to an end.
   const quisIsCompleted = activeQuestionIndex === QUESTIONS.length;
 
   // Handle select (answer) button (We're using useCallback to avoid re-render problem in a Timer (handleSkip-function))
-  const handleSelectAnswer = useCallback(function handleSelectAnswer(
-    selectedAnswer
-  ) {
-    setUserAnswer((prevUserAnswer) => [...prevUserAnswer, selectedAnswer]);
-  },
-  []);
+  const handleSelectAnswer = useCallback(
+    function handleSelectAnswer(selectedAnswer) {
+      setAnswerState("answered");
+      // Checking if answer was right.
+
+      setUserAnswer((prevUserAnswer) => [...prevUserAnswer, selectedAnswer]);
+
+      setTimeout(() => {
+        if (selectedAnswer === QUESTIONS[activeQuestionIndex].answers[0]) {
+          setAnswerState("correct");
+        } else {
+          setAnswerState("wrong");
+        }
+      }, 1000);
+
+      setTimeout(() => {
+        setAnswerState("unanswered");
+      }, 2000);
+    },
+    [activeQuestionIndex]
+  );
 
   // Handle bug with re-render ours component in Timer-component
   const handleSkipAnswer = useCallback(
@@ -59,11 +77,36 @@ export default function Quiz() {
       </div>
       {/* Printing out our answers from Array with a map() function */}
       <ul id="answers">
-        {shuffledAnswers.map((answer) => (
-          <li className="answer" key={shuffledAnswers.indexOf(answer)}>
-            <button onClick={() => handleSelectAnswer(answer)}>{answer}</button>
-          </li>
-        ))}
+        {shuffledAnswers.map((answer) => {
+          {
+            /* Changing CSS of the selected Answer if it was selected */
+          }
+          const isSelected = userAnswer[userAnswer.length - 1] === answer;
+
+          let cssClass = "";
+
+          if (answerState === "answered" && isSelected) {
+            cssClass = " selected";
+          }
+
+          if (
+            (answerState === "correct" || answerState === "wrong") &&
+            isSelected
+          ) {
+            cssClass = answerState;
+          }
+
+          return (
+            <li className="answer" key={answer}>
+              <button
+                className={cssClass}
+                onClick={() => handleSelectAnswer(answer)}
+              >
+                {answer}
+              </button>
+            </li>
+          );
+        })}
       </ul>
     </div>
   );
