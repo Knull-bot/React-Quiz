@@ -27,9 +27,9 @@ export default function Quiz() {
     [handleSelectAnswer]
   );
 
-  // Adding logic of the End of Quiz
+  // End of the Quiz. We giving hier as props  - our list of Answers
   if (quisIsCompleted) {
-    return <Summary />;
+    return <Summary userAnswers={userAnswer} />;
   }
 
   //Debugging check

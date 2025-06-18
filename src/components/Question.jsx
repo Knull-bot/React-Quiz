@@ -55,7 +55,7 @@ export default function Question({ index, onSkip, onSelectAnswer }) {
       <Timer
         key={TIMER}
         time={TIMER}
-        onTimeOut={answer === "" ? onSkip : null}
+        onTimeOut={answer.selectedAnswer === "" ? onSkip : null}
         mode={answerState}
       />
       {/* Printing out our Question */}
