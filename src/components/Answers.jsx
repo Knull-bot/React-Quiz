@@ -36,10 +36,16 @@ export default function Answers({
           ) {
             cssClass = answerState;
           }
-
+          {
+            /* Disable the button after selected Answer */
+          }
           return (
             <li className="answer" key={answer}>
-              <button className={cssClass} onClick={() => onSelect(answer)}>
+              <button
+                className={cssClass}
+                onClick={() => onSelect(answer)}
+                disabled={selectedAnswer !== ""}
+              >
                 {answer}
               </button>
             </li>
