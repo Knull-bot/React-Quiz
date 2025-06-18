@@ -5,14 +5,23 @@ import QUESTIONS from "../questions.js";
 import Timer from "./Timer.jsx";
 import Answers from "./Answers.jsx";
 
-const TIMER = 15000;
-
 export default function Question({ index, onSkip, onSelectAnswer }) {
   // State for checking if answer was right and changing css-className
   const [answer, setAnswer] = useState({
     selectedAnswer: "",
     isCorrect: null,
   });
+
+  // Added different timers with conditions to dynamicly change our Timer inside the question (to solve Timers problem)
+  let TIMER = 15000;
+
+  if (answer.selectedAnswer) {
+    TIMER = 1000;
+  }
+
+  if (answer.isCorrect !== null) {
+    TIMER = 2000;
+  }
 
   function handleSelectAnswer(answer) {
     // Initial object of answer with selected answer, but we don't know if it is correct or not
@@ -42,7 +51,13 @@ export default function Question({ index, onSkip, onSelectAnswer }) {
 
   return (
     <div id="question">
-      <Timer time={TIMER} onTimeOut={onSkip} />
+      {/* Time will change conditionally, so this prop here will change. Components will re-rendered and useEffect will work again cuz TIMER is in his dependencies */}
+      <Timer
+        key={TIMER}
+        time={TIMER}
+        onTimeOut={answer === "" ? onSkip : null}
+        mode={answerState}
+      />
       {/* Printing out our Question */}
       <h2>{QUESTIONS[index].text}</h2>
       <Answers
